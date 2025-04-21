@@ -853,7 +853,7 @@
       // (구분)2. 이벤트 리스너 및 초기화 코드 (아래쪽에 배치)
       document.addEventListener("DOMContentLoaded", function () {
         
-        initializeSupabase();
+        initSupabase();
         // 페이지 로드 시 데이터 로드 및 테이블 표시
         initializeData();
 
@@ -1500,7 +1500,7 @@
                 // 상담회원인 경우 입소일을 빈 문자열로 설정
                 formData.admissionDate = "";
                 
-                // 상담회원도 processFormData 사용 - Promise로 대기
+                // 상담회원인 경우 processFormData 사용 - Promise로 대기
                 serverResponse = await new Promise((resolve, reject) => {
                   processFormData(formData)
                     .then(function (result) {
