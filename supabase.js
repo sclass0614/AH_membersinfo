@@ -3,22 +3,18 @@ const SUPABASE_URL = "https://dfomeijvzayyszisqflo.supabase.co";
 const SUPABASE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRmb21laWp2emF5eXN6aXNxZmxvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4NjYwNDIsImV4cCI6MjA2MDQ0MjA0Mn0.-r1iL04wvPNdBeIvgxqXLF2rWqIUX5Ot-qGQRdYo_qk";
 
-// Supabase 클라이언트 초기화
-let supabase = null;
+// Supabase 클라이언트 초기화 변수
+let supabaseClient = null;
 
-// Supabase 초기화 함수
-async function initializeSupabase() {
-    try {
-        // supabase 변수가 null이기 때문에 createClient 메서드를 호출할 수 없음
-        // 대신 전역 라이브러리 객체를 사용해 클라이언트 생성
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        console.log('Supabase 클라이언트가 초기화되었습니다.');
-        return true;
-    } catch (error) {
-        console.error('Supabase 초기화 오류:', error);
-        return false;
+// Supabase 클라이언트 초기화 함수
+function initSupabase() {
+    if (!supabaseClient) {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     }
+    return supabaseClient;
 }
+
+window.supabase = initSupabase();
 
 /**
  * 단일 회원 데이터를 Supabase에 삽입하는 함수
@@ -176,6 +172,7 @@ async function displayTestResults() {
 // 주민등록번호 중복 검사 함수
 async function checkDuplicateSSN(ssn, currentMemberId = null) {
     try {
+        const supabase = initSupabase();
         let query = supabase
             .from('membersinfo')
             .select('회원번호, 회원명, 주민등록번호')
@@ -203,6 +200,7 @@ async function checkDuplicateSSN(ssn, currentMemberId = null) {
 // 회원 데이터 처리 (신규 등록 및 수정)
 async function processFormData(formData) {
     try {
+        const supabase = initSupabase();
         // 주민등록번호 중복 검사 (상담회원이 아닌 경우에만)
         if (formData.memberId !== "상담회원" && formData.ssn) {
             const duplicateCheck = await checkDuplicateSSN(formData.ssn, formData.memberId);
@@ -291,6 +289,7 @@ async function processFormData(formData) {
 // 회원 데이터 이동 (보관 처리)
 async function move_MemberLine(memberId) {
     try {
+        const supabase = initSupabase();
         // 1. 현재 회원 데이터 조회
         const { data: memberData, error: selectError } = await supabase
             .from('membersinfo')
@@ -335,6 +334,7 @@ async function move_MemberLine(memberId) {
 // 회원 번호 생성 함수
 async function generateNewMemberId() {
     try {
+        const supabase = initSupabase();
         const currentYear = new Date().getFullYear().toString().slice(-2);
         const prefix = "M" + currentYear;
 
