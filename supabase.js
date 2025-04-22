@@ -338,29 +338,14 @@ async function generateNewMemberId() {
         const currentYear = new Date().getFullYear().toString().slice(-2);
         const prefix = "M" + currentYear;
 
-        // 현재 연도의 회원 번호 조회
-        const { data, error } = await supabase
-            .from('membersinfo')
-            .select('회원번호')
-            .like('회원번호', `${prefix}%`)
-            .order('회원번호', { ascending: false });
-
-        if (error) throw error;
-
-        let maxNumber = 0;
-        if (data && data.length > 0) {
-            // 가장 큰 번호 찾기
-            data.forEach(row => {
-                const numberPart = parseInt(row.회원번호.substring(3), 10);
-                if (!isNaN(numberPart) && numberPart > maxNumber) {
-                    maxNumber = numberPart;
-                }
-            });
-        }
-
-        // 다음 번호 생성
-        const nextNumber = (maxNumber + 1).toString().padStart(3, '0');
-        return prefix + nextNumber;
+        // 트랜잭션 시작 - Supabase RPC를 사용
+        const { data: newId, error: rpcError } = await supabase.rpc('generate_unique_member_id', {
+            year_prefix: prefix
+        });
+        
+        if (rpcError) throw rpcError;
+        
+        return newId;
     } catch (error) {
         console.error('회원번호 생성 오류:', error);
         throw error;
