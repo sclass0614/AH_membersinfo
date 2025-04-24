@@ -317,6 +317,7 @@ th {
     max-width: 100%;
     display: inline-block;
     width : 10rem;
+    min-width: 3rem;
 }
 
 .btn-primary {
@@ -375,9 +376,14 @@ th {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-start;
-    gap: 1rem;
     overflow: hidden;
     flex: 1;
+    min-width: 0;
+}
+
+.search-button {
+    flex: 1;
+    min-width: 0;
 }
 
 .button-container {
@@ -393,6 +399,9 @@ th {
 .reference-date-container {
     display: flex;
     align-items: center;
+    flex: 1;
+    min-width: 3rem;
+    overflow: hidden;
 }
 
 .reference-date-input {
@@ -400,7 +409,8 @@ th {
     border: 1px solid var(--border-color);
     border-radius: 0.25rem;
     font-size: 0.9rem;
-    width: 140px;
+    width: 100%;
+    min-width: 3rem;
 }
 
 /*******************************************
@@ -439,6 +449,22 @@ th {
 
     .row-3col .col-3 {
         min-width: 20%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .search-area {
+        flex-wrap: nowrap;
+    }
+    
+    .reference-date-container {
+        flex-basis: 0;
+        flex-grow: 1;
+    }
+    
+    .search-button {
+        flex-basis: 0;
+        flex-grow: 1;
     }
 }
 
