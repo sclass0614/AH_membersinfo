@@ -342,7 +342,7 @@ async function generateNewMemberId() {
         const { data: newId, error: rpcError } = await supabase.rpc('generate_unique_member_id', {
             year_prefix: prefix
         });
-        
+
         if (rpcError) throw rpcError;
         
         return newId;

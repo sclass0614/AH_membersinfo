@@ -301,12 +301,7 @@ th {
        * 8. 버튼 스타일
        *******************************************/
 /* 버튼 스타일 */
-.button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0;
-    align-items: center;
-}
+
 
 .btn {
     padding: 0.5rem 1.5rem;
@@ -317,6 +312,11 @@ th {
     font-size: 0.9rem;
     margin-left: 0.5rem;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: inline-block;
+    width : 10rem;
 }
 
 .btn-primary {
@@ -335,6 +335,7 @@ th {
 
 /* 폼 버튼 그룹 스타일 */
 .form-button-group {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -344,9 +345,12 @@ th {
     border-radius: 0.5rem;
 }
 
-.button-container {
+.button-container-enter {
+    width: 100%;
     display: flex;
     gap: 0.5rem;
+    justify-content: flex-end;
+    overflow: hidden;
 }
 
 .button-container:first-child {
@@ -357,18 +361,6 @@ th {
     margin-left: auto;
 }
 
-/* 폼 버튼 스타일 */
-.form-button {
-    min-width: 6rem;
-    width: 6rem;
-}
-
-#convertBtn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
 
 /* 폼 버튼 그룹 ID 기반 스타일 */
 #formButtonGroup {
@@ -381,16 +373,21 @@ th {
 /* 조회 영역 스타일 */
 .search-area {
     display: flex;
-    align-items: center;
+    gap: 0.5rem;
+    justify-content: flex-start;
     gap: 1rem;
+    overflow: hidden;
+    flex: 1;
 }
 
-/* 조회 버튼 스타일 */
-.search-button {
-    min-width: 10rem;
-    width: 10rem;
-    padding: 0.5rem 0;
+.button-container {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: flex-end;
+    overflow: hidden;
 }
+
 
 /* 조회 기준일 필드 스타일 */
 .reference-date-container {
