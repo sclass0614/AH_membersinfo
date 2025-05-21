@@ -201,6 +201,10 @@ async function checkDuplicateSSN(ssn, currentMemberId = null) {
 async function processFormData(formData) {
     try {
         const supabase = initSupabase();
+        // 회원 ID 확인
+        const currentMemberId = document.getElementById("memberId").value;
+        console.log("현재 회원 ID 상태:", currentMemberId);
+
         // 주민등록번호 중복 검사 (상담회원이 아닌 경우에만)
         if (formData.memberId !== "상담회원" && formData.ssn) {
             const duplicateCheck = await checkDuplicateSSN(formData.ssn, formData.memberId);
@@ -215,8 +219,10 @@ async function processFormData(formData) {
         // 신규회원등록중이거나 신규회원전환중인 경우 새로운 회원번호 생성
         let memberIdToUse = formData.memberId;
         if (formData.memberId === "신규회원등록중" || formData.memberId === "신규회원전환중") {
+            console.log("신규 회원번호 생성 시도:", formData.memberId);
             try {
                 memberIdToUse = await generateNewMemberId();
+                console.log("생성된 회원번호:", memberIdToUse);
             } catch (error) {
                 console.error('새 회원번호 생성 오류:', error);
                 return {
@@ -333,6 +339,7 @@ async function move_MemberLine(memberId) {
 
 // 회원 번호 생성 함수
 async function generateNewMemberId() {
+  console.log("generateNewMemberId 함수 시작");
     try {
         const supabase = initSupabase();
         const currentYear = new Date().getFullYear().toString().slice(-2);
@@ -340,7 +347,7 @@ async function generateNewMemberId() {
 
         // 트랜잭션 시작 - Supabase RPC를 사용
         const { data: newId, error: rpcError } = await supabase.rpc('generate_unique_member_id', {
-            year_prefix: prefix
+            input_year_prefix: prefix
         });
 
         if (rpcError) throw rpcError;
