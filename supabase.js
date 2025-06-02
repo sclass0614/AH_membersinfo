@@ -306,17 +306,23 @@ async function move_MemberLine(memberId) {
         if (selectError) throw selectError;
         if (!memberData) throw new Error('회원 정보를 찾을 수 없습니다.');
 
-        // 2. 보관 테이블에 데이터 복사 (membersinfo_outdated 테이블 사용)
-        const { error: insertError } = await supabase
-            .from('membersinfo_outdated')
-            .insert([{
-                ...memberData,
-                archived_date: new Date().toISOString()
-            }]);
+        // 회원번호에 "상담회원"이 포함되어 있는지 확인
+        const memberNumber = memberData["회원번호"];
+        const isConsultationMember = memberNumber && memberNumber.includes("상담회원");
 
-        if (insertError) throw insertError;
+        if (!isConsultationMember) {
+            // 2. 상담회원이 아닌 경우에만 보관 테이블에 데이터 복사 (membersinfo_outdated 테이블 사용)
+            const { error: insertError } = await supabase
+                .from('membersinfo_outdated')
+                .insert([{
+                    ...memberData,
+                    archived_date: new Date().toISOString()
+                }]);
 
-        // 3. 기존 데이터 삭제
+            if (insertError) throw insertError;
+        }
+
+        // 3. 기존 데이터 삭제 (상담회원이든 아니든 삭제는 수행)
         const { error: deleteError } = await supabase
             .from('membersinfo')
             .delete()
@@ -326,7 +332,9 @@ async function move_MemberLine(memberId) {
 
         return {
             success: true,
-            message: '회원 데이터가 성공적으로 보관되었습니다.'
+            message: isConsultationMember 
+                ? '상담회원 데이터가 삭제되었습니다.' 
+                : '회원 데이터가 성공적으로 보관되었습니다.'
         };
     } catch (error) {
         console.error('데이터 이동 오류:', error);
